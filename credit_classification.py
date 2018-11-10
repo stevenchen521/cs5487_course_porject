@@ -83,7 +83,7 @@ def train_svm(X_train, X_test, y_train, resample, feature_sel, y_weight):
         sm = SMOTE(k_neighbors = 30, random_state=RANDOM_STATE)
         X_train, y_train = sm.fit_sample(X_train, y_train.ravel())
 
-    clf_svm = SVC(class_weight=y_weight, random_state=RANDOM_STATE, gamma='scale'  , kernel='poly')
+    clf_svm = SVC(class_weight=y_weight, random_state=RANDOM_STATE, gamma='scale', kernel='poly')
     clf_svm.fit(X_train, y_train)
     return clf_svm.predict(X_test)
     
@@ -116,30 +116,43 @@ def compare_feature_sel(X_train, X_test, y_train, y_test, y_weight):
     predicted = {}
     predicted[RANDOMFOREST] = train_random_forest(X_train, X_test, y_train, resample = False, feature_sel = False, y_weight=y_weight)
     predicted[LOGISTICREG] = train_logistic_reg(X_train, X_test, y_train,   resample = False, feature_sel = False, y_weight=y_weight)
-    # predicted[SVM] = train_svm(X_train, X_test, y_train,                    resample = False, feature_sel = False, y_weight=y_weight)
+    predicted[SVM] = train_svm(X_train, X_test, y_train,                    resample = False, feature_sel = False, y_weight=y_weight)
     evaluation(predicted, y_test, 'W/O feature selection')
 
     predicted[RANDOMFOREST] = train_random_forest(X_train, X_test, y_train, resample = False, feature_sel = True, y_weight=y_weight)
     predicted[LOGISTICREG]  = train_logistic_reg(X_train, X_test, y_train,  resample = False, feature_sel = True, y_weight=y_weight)
-    # predicted[SVM]          = train_svm(X_train, X_test, y_train,           resample = False, feature_sel = True, y_weight=y_weight)
+    predicted[SVM]          = train_svm(X_train, X_test, y_train,           resample = False, feature_sel = True, y_weight=y_weight)
     evaluation(predicted, y_test, 'W/ feature selection')
 
 def compare_class_weight(X_train, X_test, y_train, y_test, y_weight1, y_weight2):
     predicted = {}
     predicted[RANDOMFOREST] = train_random_forest(X_train, X_test, y_train, resample = False, feature_sel = False, y_weight=y_weight1)
     predicted[LOGISTICREG] = train_logistic_reg(X_train, X_test, y_train,   resample = False, feature_sel = False, y_weight=y_weight1)
-    # predicted[SVM] = train_svm(X_train, X_test, y_train,                    resample = False, feature_sel = False, y_weight=y_weight1)
+    predicted[SVM] = train_svm(X_train, X_test, y_train,                    resample = False, feature_sel = False, y_weight=y_weight1)
     evaluation(predicted, y_test, y_weight1)
 
     predicted[RANDOMFOREST] = train_random_forest(X_train, X_test, y_train, resample = False, feature_sel = False, y_weight=y_weight2)
     predicted[LOGISTICREG] = train_logistic_reg(X_train, X_test, y_train,   resample = False, feature_sel = False, y_weight=y_weight2)
-    # predicted[SVM] = train_svm(X_train, X_test, y_train,                    resample = False, feature_sel = False, y_weight=y_weight2)
+    predicted[SVM] = train_svm(X_train, X_test, y_train,                    resample = False, feature_sel = False, y_weight=y_weight2)
     evaluation(predicted, y_test, y_weight2)
+
+def compare_resampling(X_train, X_test, y_train, y_test, y_weight):
+    predicted = {}
+    # predicted[RANDOMFOREST] = train_random_forest(X_train, X_test, y_train, resample = False, feature_sel = False, y_weight=y_weight)
+    # predicted[LOGISTICREG] = train_logistic_reg(X_train, X_test, y_train,   resample = False, feature_sel = False, y_weight=y_weight)
+    # predicted[SVM] = train_svm(X_train, X_test, y_train,                    resample = False, feature_sel = False, y_weight=y_weight)
+    # evaluation(predicted, y_test, 'W/O Resampling')
+
+    predicted[RANDOMFOREST] = train_random_forest(X_train, X_test, y_train, resample = True, feature_sel = True, y_weight=y_weight)
+    predicted[LOGISTICREG]  = train_logistic_reg(X_train, X_test, y_train,  resample = True, feature_sel = True, y_weight=y_weight)
+    predicted[SVM]          = train_svm(X_train, X_test, y_train,           resample = True, feature_sel = True, y_weight=y_weight)
+    evaluation(predicted, y_test, 'W/ Resampling')
 
 def main():
     X_train, X_test, y_train, y_test = preprocess('./data/credit_g_normalized.csv')
 
-    compare_feature_sel(X_train, X_test, y_train, y_test, y_weight={0: 2.9, 1: 1})
+    compare_resampling(X_train, X_test, y_train, y_test, y_weight={0: 2.4, 1: 1})
+    # compare_feature_sel(X_train, X_test, y_train, y_test, y_weight={0: 2.9, 1: 1})
     # compare_class_weight(X_train, X_test, y_train, y_test, y_weight1={0: 1, 1: 1}, y_weight2={0: 2.9, 1: 1})
 
 
