@@ -6,11 +6,6 @@ import random
 import pandas as pd
 
 import numpy as np
-import matplotlib as mlb
-
-from numpy.dual import inv
-mlb.use("TkAgg")
-import matplotlib.pyplot as plt
 
 
 logging.basicConfig(level=logging.INFO)
